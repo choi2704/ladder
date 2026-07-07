@@ -87,7 +87,8 @@
       return { lengthMm: 0, meter: 0, qty, rate: meterRate(), ladderTotal: 0, lockPrice: e.lockOption.checked ? T.lockPrice : 0, total: e.landingOption.checked ? null : 0 };
     }
 
-    const lengthMm = Math.max(0, Number(raw));
+    const inputLengthMm=Math.max(0,Number(raw));
+    const lengthMm=inputLengthMm>0&&inputLengthMm<3000?3000:inputLengthMm;
     const meter = lengthMm / 1000;
     const rate = meterRate();
     const ladderTotal = meter * rate * qty;
@@ -98,13 +99,13 @@
     e.meterText.textContent = meter.toFixed(2) + 'm';
     e.typeText.textContent = state.type;
     e.materialText.textContent = state.material;
-    e.lengthText.textContent = `${lengthMm}mm / ${meter.toFixed(2)}m`;
+    e.lengthText.textContent = inputLengthMm<3000?`${inputLengthMm}mm 입력 → 최소 3000mm 적용 / ${meter.toFixed(2)}m`:`${lengthMm}mm / ${meter.toFixed(2)}m`;
     e.meterRateText.textContent = won(rate);
     e.ladderTotalText.textContent = won(ladderTotal);
     e.lockText.textContent = e.lockOption.checked ? '선택 / +80,000원' : '미선택';
     e.landingText.textContent = e.landingOption.checked ? '선택 / 별도문의' : '미선택';
     e.qtyText.textContent = qty + 'EA';
-    e.guideText.textContent = e.landingOption.checked ? '계단참 선택 시 별도문의 대상입니다. 설치 위치 사진과 치수를 톡톡으로 보내주세요.' : `${state.type} ${state.material} 기준으로 계산된 예상 견적입니다. 설치 위치 사진을 톡톡으로 보내주시면 더 정확합니다.`;
+    e.guideText.textContent = e.landingOption.checked ? '계단참 선택 시 별도문의 대상입니다. 설치 위치 사진과 치수를 톡톡으로 보내주세요.' : `${inputLengthMm<3000?'최소 주문 길이 3000mm 기준으로 계산되었습니다.':`${state.type} ${state.material} 기준으로 계산된 예상 견적입니다.` 설치 위치 사진을 톡톡으로 보내주시면 더 정확합니다.`;
 
     return { lengthMm, meter, qty, rate, ladderTotal, lockPrice, total };
   }
@@ -128,7 +129,7 @@
     ev.preventDefault();
     const text = makeEstimateText();
     try { await navigator.clipboard.writeText(text); } catch (err) {}
-    window.open('https://kdjavara.kr/', '_blank');
+    window.open('https://kdjavara.kr/product/%ED%85%8C%EC%8A%A4%ED%8A%B8%ED%83%9C%EC%96%91%EA%B4%91%EC%A0%90%EA%B2%80%EC%82%AC%EB%8B%A4%EB%A6%AC-%EC%95%88%EC%A0%84%EB%A7%9D-%EC%95%88%EC%A0%84-%EC%A0%90%EA%B2%80-%EC%82%AC%EB%8B%A4%EB%A6%AC-%ED%98%84%EC%9E%A5-%EC%B6%94%EB%9D%BD%EB%B0%A9%EC%A7%80-%EC%9D%BC%EC%9E%90%ED%98%95-%EB%B0%B4%EB%94%A9%ED%98%95-%EB%A7%9E%EC%B6%A4%EC%A0%9C%EC%9E%91/774/category/56/display/1/','_blank');
   }
 
   function bind() {
